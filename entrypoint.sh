@@ -27,11 +27,6 @@ if [ -z "$STAGE" ]; then
   exit 1
 fi
 
-if [ -z "$FILES" ]; then
-  echo "FILES is not set. Quitting."
-  exit 0
-fi
-
 # Create a dedicated profile for this action to avoid
 # conflicts with other actions.
 # https://github.com/jakejarvis/s3-sync-action/issues/1
@@ -42,14 +37,15 @@ ${AWS_REGION}
 text
 EOF
 
-echo "${FILES}"
 echo "$FILES"
 
 for file in "$FILES"
 do
   echo "check file"
+  echo "$file"
   if [[ $file == "serverless/"* ]]; then
     # get file name
+    echo "serverless file"
     filename=$(basename $file)
     # get hash content of file
     hash=$(<$file)
