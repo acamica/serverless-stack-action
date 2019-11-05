@@ -29,7 +29,7 @@ fi
 
 if [ -z "$FILES" ]; then
   echo "FILES is not set. Quitting."
-  exit 1
+  exit 0
 fi
 
 # Create a dedicated profile for this action to avoid
@@ -41,9 +41,6 @@ ${AWS_SECRET_ACCESS_KEY}
 ${AWS_REGION}
 text
 EOF
-
-echo "${FILES}"
-echo "$FILES"
 
 for file in ${FILES}
 do
