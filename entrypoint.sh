@@ -22,19 +22,9 @@ if [ -z "$AWS_REGION" ]; then
   exit 1
 fi
 
-if [ -z "$PROJECT_NAME" ]; then
-  echo "PROJECT_NAME is not set. Quitting."
-  exit 1
-fi
-
 if [ -z "$STAGE" ]; then
   echo "STAGE is not set. Quitting."
   exit 1
-fi
-
-# Default to syncing entire repo if DEST_DIR not set.
-if [ -z "$DEST_DIR" ]; then
-  DEST_DIR="."
 fi
 
 # Create a dedicated profile for this action to avoid
@@ -47,11 +37,22 @@ ${AWS_REGION}
 text
 EOF
 
-# Use our dedicated profile and suppress verbose messages.
-# All other flags are optional via `args:` directive.
-sh -c "aws s3 cp s3://${AWS_S3_BUCKET}/${AWS_S3_FILE} ${DEST_DIR}"
+files=$(git diff --name-only ${prevCommitSHA} ${currentCommitSHA})
+for file in $files
+do
+  if [[ $file == "serverless/"* ]]; then
+    # get file name
+    filename=$(basename $file)
+    # get hash content of file
+    hash=$(<$file)
+    # Use our dedicated profile and suppress verbose messages.
+    # All other flags are optional via `args:` directive.
+    sh -c "aws s3 cp s3://${AWS_S3_BUCKET}/$hash.yml"
 
-sh -c "aws cloudformation deploy --template-file ${DEST_DIR}/${AWS_S3_FILE} \
-    --stack-name ${PROJECT_NAME}-${STAGE} \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides Stage=${STAGE}"
+    sh -c "aws cloudformation deploy --template-file ./$hash \
+        --stack-name $filename-${STAGE} \
+        --capabilities CAPABILITY_NAMED_IAM \
+        --parameter-overrides Stage=${STAGE}"
+  fi
+done
+
