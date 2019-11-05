@@ -37,8 +37,7 @@ ${AWS_REGION}
 text
 EOF
 
-files=$(git diff --name-only ${prevCommitSHA} ${currentCommitSHA})
-for file in $files
+for file in ${{ inputs.files }}
 do
   if [[ $file == "serverless/"* ]]; then
     # get file name
