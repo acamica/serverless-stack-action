@@ -42,7 +42,7 @@ ${AWS_REGION}
 text
 EOF
 
-for file in $FILES
+for file in "$FILES"
 do
   if [[ $file == "serverless/"* ]]; then
     # get file name
