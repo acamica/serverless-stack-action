@@ -42,8 +42,12 @@ ${AWS_REGION}
 text
 EOF
 
+echo "${FILES}"
+echo "$FILES"
+
 for file in "$FILES"
 do
+  echo "check file"
   if [[ $file == "serverless/"* ]]; then
     # get file name
     filename=$(basename $file)
