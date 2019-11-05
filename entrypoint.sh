@@ -39,23 +39,20 @@ EOF
 
 for file in $FILES
 do
-  echo "$file"
   case "$file" in
   "serverless/"*)
     # get file name
     filename=$(basename $file)
-    echo "$filename"
     # get hash content of file
-    hash=$(<$file)
-    echo "$hash"
+    hash=$(cat $file)
     # Use our dedicated profile and suppress verbose messages.
     # All other flags are optional via `args:` directive.
-    sh -c "aws s3 cp s3://${AWS_S3_BUCKET}/$hash.yml"
+    aws s3 cp s3://${AWS_S3_BUCKET}/${hash}.yml ./ --profile s3-download-action
 
-    sh -c "aws cloudformation deploy --template-file ./$hash \
+    aws cloudformation deploy --template-file ./${hash}.yml \
         --stack-name $filename-${STAGE} \
         --capabilities CAPABILITY_NAMED_IAM \
-        --parameter-overrides Stage=${STAGE}"
+        --parameter-overrides Stage=${STAGE}
   ;;
   *       ) echo no ;;
   esac
