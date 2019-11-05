@@ -37,9 +37,7 @@ ${AWS_REGION}
 text
 EOF
 
-echo "$FILES"
-
-for file in "$FILES"
+for file in $FILES
 do
   echo "check file"
   echo "$file"
