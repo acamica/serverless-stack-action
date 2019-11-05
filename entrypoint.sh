@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
@@ -39,8 +39,8 @@ EOF
 
 for file in $FILES
 do
-  echo "$file"
-  if [[ $file == "serverless/"* ]]; then
+  if [ $file  = "serverless/"* ]
+  then
     # get file name
     echo "serverless file"
     filename=$(basename $file)
