@@ -30,7 +30,7 @@ fi
 # Create a dedicated profile for this action to avoid
 # conflicts with other actions.
 # https://github.com/jakejarvis/s3-sync-action/issues/1
-aws configure --profile s3-download-action <<-EOF > /dev/null 2>&1
+aws configure --profile push-s3-cfn <<-EOF > /dev/null 2>&1
 ${AWS_ACCESS_KEY_ID}
 ${AWS_SECRET_ACCESS_KEY}
 ${AWS_REGION}
@@ -47,12 +47,13 @@ do
     hash=$(cat $file)
     # Use our dedicated profile and suppress verbose messages.
     # All other flags are optional via `args:` directive.
-    aws s3 cp s3://${AWS_S3_BUCKET}/${hash}.yml ./ --profile s3-download-action
+    aws s3 cp s3://${AWS_S3_BUCKET}/${hash}.yml ./ --profile push-s3-cfn
 
     aws cloudformation deploy --template-file ./${hash}.yml \
         --stack-name $filename-${STAGE} \
         --capabilities CAPABILITY_NAMED_IAM \
-        --parameter-overrides Stage=${STAGE}
+        --parameter-overrides Stage=${STAGE} \
+        --profile push-s3-cfn
   ;;
   *       ) echo no ;;
   esac
