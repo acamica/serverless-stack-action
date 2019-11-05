@@ -39,13 +39,15 @@ EOF
 
 for file in $FILES
 do
-  if [ $file  = "serverless/"* ]
-  then
+  echo "$file"
+  case "$file" in
+  "serverless/"*)
     # get file name
-    echo "serverless file"
     filename=$(basename $file)
+    echo "$filename"
     # get hash content of file
     hash=$(<$file)
+    echo "$hash"
     # Use our dedicated profile and suppress verbose messages.
     # All other flags are optional via `args:` directive.
     sh -c "aws s3 cp s3://${AWS_S3_BUCKET}/$hash.yml"
@@ -54,6 +56,8 @@ do
         --stack-name $filename-${STAGE} \
         --capabilities CAPABILITY_NAMED_IAM \
         --parameter-overrides Stage=${STAGE}"
-  fi
+  ;;
+  *       ) echo no ;;
+  esac
 done
 
