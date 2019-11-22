@@ -52,7 +52,7 @@ do
     aws cloudformation deploy --template-file ./${hash}.yml \
         --stack-name $filename-${STAGE} \
         --capabilities CAPABILITY_NAMED_IAM \
-        --parameter-overrides Stage=${STAGE} \
+        --parameter-overrides Stage=${STAGE} Git_Hash=${GIT_HASH} \
         --profile push-s3-cfn
   ;;
   *       ) echo no ;;
