@@ -37,23 +37,29 @@ ${AWS_REGION}
 text
 EOF
 
-for file in $FILES
+for gitfile in $FILES
 do
+  actiontype=$(echo $gitfile | cut -d' ' -f1)
+  file=$(echo $gitfile | cut -d' ' -f2)
   case "$file" in
   "serverless/"*)
-    # get file name
-    filename=$(basename $file)
-    # get hash content of file
-    hash=$(cat $file)
-    # Use our dedicated profile and suppress verbose messages.
-    # All other flags are optional via `args:` directive.
-    aws s3 cp s3://${AWS_S3_BUCKET}/${hash}.yml ./ --profile push-s3-cfn
+    if [ "$actiontype" = "D" ]; then
+        echo "Deleted, we should delete stack"
+    else
+      # get file name
+      filename=$(basename $file)
+      # get hash content of file
+      hash=$(cat $file)
+      # Use our dedicated profile and suppress verbose messages.
+      # All other flags are optional via `args:` directive.
+      aws s3 cp s3://${AWS_S3_BUCKET}/${hash}.yml ./ --profile push-s3-cfn
 
-    aws cloudformation deploy --template-file ./${hash}.yml \
-        --stack-name $filename-${STAGE} \
-        --capabilities CAPABILITY_NAMED_IAM \
-        --parameter-overrides Stage=${STAGE} GitHash=${GITHASH} \
-        --profile push-s3-cfn
+      aws cloudformation deploy --template-file ./${hash}.yml \
+          --stack-name $filename-${STAGE} \
+          --capabilities CAPABILITY_NAMED_IAM \
+          --parameter-overrides Stage=${STAGE} GitHash=${GITHASH} \
+          --profile push-s3-cfn
+    fi
   ;;
   *       ) echo no ;;
   esac
