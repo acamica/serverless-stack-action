@@ -50,7 +50,7 @@ do
       filename=$(basename $file)
       # get hash content of file
       hashfile=$(cat $file)
-      hash=$(echo $hashfile | tr '\n' '')
+      hash=$(echo $hashfile | tr -d '\r')
       # Use our dedicated profile and suppress verbose messages.
       # All other flags are optional via `args:` directive.
       aws s3 cp s3://${AWS_S3_BUCKET}/${hash}.yml ./ --profile push-s3-cfn
