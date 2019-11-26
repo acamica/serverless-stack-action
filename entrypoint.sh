@@ -49,7 +49,8 @@ do
       # get file name
       filename=$(basename $file)
       # get hash content of file
-      hash=$(cat $file)
+      hashfile=$(cat $file)
+      hash=$(echo $hashfile | tr '\n' '')
       # Use our dedicated profile and suppress verbose messages.
       # All other flags are optional via `args:` directive.
       aws s3 cp s3://${AWS_S3_BUCKET}/${hash}.yml ./ --profile push-s3-cfn
@@ -58,6 +59,7 @@ do
           --stack-name $filename-${STAGE} \
           --capabilities CAPABILITY_NAMED_IAM \
           --parameter-overrides Stage=${STAGE} GitHash=${hash} \
+          --no-fail-on-empty-changeset \
           --profile push-s3-cfn
     fi
   ;;
