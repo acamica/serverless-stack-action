@@ -60,7 +60,7 @@ do
           --capabilities CAPABILITY_NAMED_IAM \
           --parameter-overrides Stage=${STAGE} GitHash=${hash} \
           --no-fail-on-empty-changeset \
-          --profile push-s3-cfn
+          --profile push-s3-cfn &
     fi
   ;;
   *       ) echo no ;;
