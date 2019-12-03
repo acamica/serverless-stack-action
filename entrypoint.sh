@@ -66,4 +66,5 @@ do
   *       ) echo no ;;
   esac
 done
+wait
 
