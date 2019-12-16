@@ -37,12 +37,17 @@ ${AWS_REGION}
 text
 EOF
 
+stagingfolder=$STAGE
+if [ "$STAGE" = "staging" ]; then
+  stagingfolder=""
+fi
+
 for gitfile in $FILES
 do
   actiontype=$(echo $gitfile | cut -d' ' -f1)
   file=$(echo $gitfile | cut -d' ' -f2)
   case "$file" in
-  "serverless/"*)
+  "serverless/$stagingfolder"*)
     if [ "$actiontype" = "D" ]; then
         echo "Deleted, we should delete stack"
     else
