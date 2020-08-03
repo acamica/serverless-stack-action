@@ -42,7 +42,7 @@ if [ "$STAGE" = "staging" ]; then
   stagingfolder=""
 fi
 
-for gitfile in "{$FILES[@]}"
+for gitfile in $FILES
 do
   actiontype=$(echo $gitfile | cut -d' ' -f1)
   file=$(echo $gitfile | cut -d' ' -f2)
